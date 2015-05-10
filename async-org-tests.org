@@ -1,0 +1,22 @@
+* Some Tests
+
+** Non-async
+
+#+name: non-async-test
+#+begin_src emacs-lisp 
+(message "this is a test")
+#+end_src
+
+#+RESULTS: non-async-test
+: this is a test
+
+** Basic async
+
+#+name: basic-async-test
+#+begin_src emacs-lisp 
+(async-org-call (message "this is in inferior"))
+#+end_src
+
+#+RESULTS: basic-async-test
+: #<process emacs>
+
