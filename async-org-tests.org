@@ -19,4 +19,5 @@
 
 #+RESULTS: basic-async-test
 : #<process emacs>
+: this is in inferior
 

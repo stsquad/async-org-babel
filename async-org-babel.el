@@ -39,10 +39,7 @@ If executed inside an org file will insert the results into the src
   buffer. An optional `POST-FORM' can concatenate results to the async
   forms."
 
-  (let ((async-sexp async-form)
-
-        ;; these are only needed for results handling
-        (result-buffer (buffer-name))
+  (let ((result-buffer (buffer-name))
         (result-org-name (nth 4 (org-babel-get-src-block-info))))
 
     `(async-start
@@ -50,33 +47,23 @@ If executed inside an org file will insert the results into the src
       ;; The result of the async-sexp is returned to the handler
       ;; as result.
       (lambda ()
-        ,(async-inject-variables "async-sexp")
-        (eval async-sexp))
+        ,(async-inject-variables "async-form")
+        (eval async-form))
 
       ;; This code runs in the current emacs process.
       (lambda (result)
-        (message "We have %s/%s" result-buffer result-org-name)
-
-        ;; Do we have a post-form to execute?
-        (when ,post-form
-          (setq result (append
-                        (if (listp result)
-                           result
-                         (list (cons 'async-form result)))
-                       (list (cons 'post-form (eval ,post-form))))))
-
+        (let ((buf ,result-buffer)
+              (org ,result-org-name))
+          
           ;; Send the results somewhere
-          (if (and result-buffer result-org-name)
+          (if (and buf org)
               (save-excursion
-                (message
-                 "sending result to: %s/%s (%s)"
-                 result-buffer result-org-name)
-                (with-current-buffer result-buffer
-                  (org-babel-goto-named-result result-org-name)
+                (with-current-buffer buf
+                  (org-babel-goto-named-result org)
                   (next-line)
                   (goto-char (org-babel-result-end))
                   (org-babel-insert-result (format "%s" result))))
-            (message (pp (format "async-result: %s" result))))))))
+            (message (pp (format "async-result: %s" result)))))))))
 
 (provide 'async-org-babel)
 ;;; async-org-babel.el ends here
