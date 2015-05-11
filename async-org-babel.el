@@ -32,12 +32,11 @@
 ;; in the inferior emacs. Any state the needs to be passed in
 ;; explicitly. Currently that is all done within the async-form sexp.
 
-(defmacro async-org-call (async-form &optional post-form)
+(defmacro async-org-call (async-form)
   "Expands `ASYNC-FORM' as an asynchronus org-bable function.
 If executed inside an org file will insert the results into the src
   blocks results.  Otherwise the result will be echoed to the Message
-  buffer. An optional `POST-FORM' can concatenate results to the async
-  forms."
+  buffer."
 
   (let ((result-buffer (buffer-name))
         (result-org-name (nth 4 (org-babel-get-src-block-info))))

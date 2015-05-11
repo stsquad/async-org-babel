@@ -4,7 +4,7 @@
 
 #+name: non-async-test
 #+begin_src emacs-lisp 
-(message "this is a test")
+(format "this is a test")
 #+end_src
 
 #+RESULTS: non-async-test
@@ -14,10 +14,21 @@
 
 #+name: basic-async-test
 #+begin_src emacs-lisp 
-(async-org-call (message "this is in inferior"))
+(async-org-call (format "this is in inferior"))
 #+end_src
 
 #+RESULTS: basic-async-test
 : #<process emacs>
-: this is in inferior
+
+#+name: async-with-delay
+#+begin_src emacs-lisp 
+(async-org-call ((sleep-for 3) (format "woken up")))
+#+end_src
+
+#+RESULTS:
+=this is in inferior
+=: this is in inferior
+
+#+RESULTS: async-with-delay
+: #<process emacs>
 
