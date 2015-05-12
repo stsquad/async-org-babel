@@ -1,0 +1,8 @@
+* Introduction
+
+This provides some simple macros for running org-babel source blocks
+asynchronously in an inferior emacs instance. This is useful if you
+are running long calculations and don't won't to freeze the user
+interface.
+
+Underneath it uses the async library to do the heavy lifting.
