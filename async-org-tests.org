@@ -18,17 +18,26 @@
 #+end_src
 
 #+RESULTS: basic-async-test
-: #<process emacs>
+: 617878f6334975eb502dfb440779df19
 
 #+name: async-with-delay
 #+begin_src emacs-lisp 
 (async-org-call ((sleep-for 3) (format "woken up")))
 #+end_src
 
-#+RESULTS:
-=this is in inferior
-=: this is in inferior
-
 #+RESULTS: async-with-delay
-: #<process emacs>
+: da13641b0b3e42c3ccb2e09c13749452
+
+#+name: async-do-md5sum-work
+#+begin_src emacs-lisp 
+(async-org-call
+ (shell-command-to-string
+  "dd status=none count=8192 bs=8192 if=/dev/urandom | md5sum"))
+#+end_src
+
+#+RESULTS: async-do-md5sum-work
+: 8acc0e4323bd1355109e9f3c1c96e9c4  -
+
+
+
 

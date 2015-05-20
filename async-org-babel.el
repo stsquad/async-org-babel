@@ -28,6 +28,11 @@
 
 ;; Code
 
+(defun async-org--result-token ()
+  "Return a unique result token.
+We can use to replace the result later."
+  (md5 (format "%s" (current-time))))
+
 ;; It's important to realise we can't have our exact same environment
 ;; in the inferior emacs. Any state the needs to be passed in
 ;; explicitly. Currently that is all done within the async-form sexp.
@@ -39,9 +44,10 @@ If executed inside an org file will insert the results into the src
   buffer."
 
   (let ((result-buffer (buffer-name))
-        (result-org-name (nth 4 (org-babel-get-src-block-info))))
+        (result-token (async-org--result-token)))
 
-    `(async-start
+    (eval
+     `(async-start
 
       ;; The result of the async-sexp is returned to the handler
       ;; as result.
@@ -52,17 +58,20 @@ If executed inside an org file will insert the results into the src
       ;; This code runs in the current emacs process.
       (lambda (result)
         (let ((buf ,result-buffer)
-              (org ,result-org-name))
-          
+              (token ,result-token))
+
+          (message "%s/%s/%s" buf token result)
           ;; Send the results somewhere
-          (if (and buf org)
+          (if (and buf token)
               (save-excursion
                 (with-current-buffer buf
-                  (org-babel-goto-named-result org)
-                  (next-line)
-                  (goto-char (org-babel-result-end))
-                  (org-babel-insert-result (format "%s" result))))
-            (message (pp (format "async-result: %s" result)))))))))
+                  (goto-char (point-min))
+                  (if (re-search-forward token nil t)
+                      (replace-match (format "%s" result))
+                    (message "failed to find:%s" token))))
+            (message (pp (format "async-result: %s" result))))))))
+
+    result-token))
 
 (provide 'async-org-babel)
 ;;; async-org-babel.el ends here
