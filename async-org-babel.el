@@ -31,7 +31,7 @@
 (defun async-org--result-token ()
   "Return a unique result token.
 We can use to replace the result later."
-  (md5 (format "%s" (current-time))))
+  (format "ASYNC:%s" (md5 (format "%s" (current-time)))))
 
 ;; It's important to realise we can't have our exact same environment
 ;; in the inferior emacs. Any state the needs to be passed in
